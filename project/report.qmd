@@ -1,0 +1,114 @@
+---
+title: "Richer = Longer? Unravelling the Wealth-Health Connection"
+subtitle: "Evolution  of Population, Life Expectancy across globe since 1950"
+author: "Ritu yadav"
+date: "2024-04-04"
+format: html
+execute:
+  echo: false
+  warning: false
+  message: false
+
+---
+The world's growing population presents both challenges and opportunities for global GDP. On one hand, population growth can stimulate **economic activity** through increased consumption, labour force expansion, and market demand. However, rapid population growth also strains resources, infrastructure, and social services, potentially leading to economic inefficiencies and disparities.
+
+
+```{r}
+library(tidyverse)
+```
+```{r}
+#| label: setup
+#| include: false
+
+
+# libraries
+library(tidyverse)
+
+unicef_metadata <- read.csv("/cloud/project/unicef_metadata.csv")
+```
+
+```{r}
+map_world <- map_data("world")
+unicef_metadata_2007 <- unicef_metadata %>%
+  filter(year == 2007)
+map_pop_2007 <- full_join(map_world, unicef_metadata_2007, by = c("region" = "country"))
+ggplot(data = map_pop_2007, aes(x = long, y = lat, group = group, fill = lifeExp)) +
+  geom_polygon(color = "black") +
+  scale_fill_gradient(low = "yellow", high = "red", na.value = "grey") +
+  labs(
+    title = "Differences between countries regarding their life expectancy in 2007",
+    subtitle = "Countries in grey have no data due to a mismatch with their names",
+    caption = "Source: UNICEF Metadata",
+    x = "Longitude",
+    y = "Latitude",
+    fill = "Life Expectancy"
+  ) +
+  theme_bw()
+
+
+
+
+```
+Analysing population and Life expectancy trends of different countries since 1952 reveals diverse trajectories shaped by historical events, economic policies, and demographic shifts. Countries such as **China** and **India** have experienced substantial population growth alongside remarkable GDP expansion, driven by *industrialization*, *urbanization*, and *economic reforms*.
+
+
+
+
+
+```{r}
+ggplot(data = unicef_metadata, aes(x = lifeExp, y = year)) +
+  geom_point(color = "orange", size = 0.5, shape = 8) +  # Change color, size, and shape
+  labs(title = "Increase in  Life Expectancy since 1960 ",
+       x = "Life Expectancy",
+       y = "Year")
+```
+**Average Life Expectancy Across Different Countries**
+
+Life expectancy varies globally due to factors like healthcare, socio-economic conditions, and lifestyle. For example, **Japan** has an average life expectancy of *84 years*, attributed to advanced healthcare and healthy living. **Switzerland**, with *83 years*, benefits from high living standards and excellent healthcare. In contrast, **Nigeria** faces challenges, averaging *55 years*, due to healthcare issues and diseases. **Australia** enjoys *83 years* due to its robust healthcare and public health initiatives. **Brazil**, with *76 years*, struggles with healthcare access and socio-economic disparities. **China**, with *76 years*, has made healthcare improvements. **India**'s average of *69 years* reflects health challenges and socio-economic factors. These examples highlight the importance of addressing disparities and promoting healthy living for improved life expectancy worldwide.
+
+
+
+
+
+
+```{r}
+
+avg_lifeExp <- unicef_metadata %>%
+  group_by(country) %>%
+  summarize(avg_lifeExp = mean(lifeExp, na.rm = TRUE))
+ggplot(avg_lifeExp, aes(x = country, y = avg_lifeExp)) +
+  geom_bar(stat = "identity", fill = "purple") +
+  labs(title = "Average Life Expectancy by Country",
+       x = "Country",
+       y = "Average Life Expectancy") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1, size = 2)) +
+  scale_x_discrete(labels = function(x) ifelse(seq_along(x) %% 2 == 0, "", x))
+
+
+
+```
+Since 1950, global population dynamics have undergone significant shifts, with several major countries experiencing notable changes in population size. China stands out as a prime example, with its population growing steadily until recent decades when **government policies, such as the one-child policy,** aimed to curb population growth. India has also seen substantial population growth since 1950, fuelled by high fertility rates and improving healthcare. Additionally, countries in **Africa**, such as Nigeria, have experienced rapid population growth due to factors like high birth rates and improving life expectancy.
+
+```{r}
+plot(unicef_metadata$year, unicef_metadata$lifeExp, type = "l",
+  col = "skyblue", xlab = "Year", ylab = "Life Expectancy",
+  main = "Life Expectancy Over Time")
+```
+
+
+```{r}
+```
+In conclusion, the simultaneous trends of a **growing global population** and increasing *life expectancy* present both opportunities and challenges for societies worldwide. On one hand, longer *life expectancy* reflects advancements in healthcare, living standards, and overall well-being. However, it also places strains on resources, healthcare systems, and social infrastructure. To navigate these dynamics effectively, policymakers should prioritize investments in healthcare, education, and social services to support aging populations while ensuring sustainable development and resource management. Additionally, addressing inequalities in access to healthcare and social support systems is crucial for promoting healthy aging and ensuring that the benefits of increased *life expectancy* are equitably distributed across all segments of society. Proactive measures such as promoting healthy lifestyles, fostering innovation in healthcare delivery, and encouraging intergenerational solidarity can further enhance the quality of life for all individuals amidst the complexities of population growth and longevity.
+
+```{r}
+
+
+
+
+
+
+
+```
+
+
+```{r}
